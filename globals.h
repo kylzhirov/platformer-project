@@ -21,7 +21,7 @@ inline const char WALL      = '#',
 
 /* Levels */
 
-struct level {
+struct Level {
     size_t rows = 0, columns = 0;
     char *data = nullptr;
 };
@@ -41,7 +41,7 @@ inline char LEVEL_1_DATA[] = {
         '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '=', '=', '=', '=', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '=', '=', '=', '=', '=', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#',
 };
 
-inline level LEVEL_1 = {
+inline Level LEVEL_1 = {
         12, 72,
         LEVEL_1_DATA
 };
@@ -61,7 +61,7 @@ inline char LEVEL_2_DATA[] = {
         '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '=', '=', '#', '#', '=', '=', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'
 };
 
-inline level LEVEL_2 = {
+inline Level LEVEL_2 = {
         12, 78,
         LEVEL_2_DATA
 };
@@ -81,7 +81,7 @@ inline char LEVEL_3_DATA[] = {
         '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '=', '=', '=', '=', '=', '=', '=', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'
 };
 
-inline level LEVEL_3 = {
+inline Level LEVEL_3 = {
         12, 86,
         LEVEL_3_DATA
 };
@@ -89,13 +89,13 @@ inline level LEVEL_3 = {
 inline int level_index = 0;
 inline const int LEVEL_COUNT = 3;
 
-inline level LEVELS[LEVEL_COUNT] = {
+inline Level LEVELS[LEVEL_COUNT] = {
         LEVEL_1, LEVEL_2, LEVEL_3
 };
 
 /* Loaded Level Data */
 
-inline level current_level;
+inline Level current_level;
 inline char *current_level_data;
 
 /* Timer-mechanic related */
@@ -128,12 +128,12 @@ inline int player_lives = MAX_PLAYER_LIVES;
 
 /* Enemy data */
 
-struct Enemy {
-    Vector2 pos;
-    bool is_looking_right;
-};
+/*struct Enemy {*/
+/*    Vector2 pos;*/
+/*    bool is_looking_right;*/
+/*};*/
 
-inline std::vector<Enemy> enemies;
+/*inline std::vector<Enemy> enemies;*/
 
 /* Graphic Metrics */
 
@@ -157,9 +157,9 @@ inline const float PARALLAX_LAYERED_SPEED_DIFFERENCE = 3.0f;
 
 inline Font menu_font;
 
-/* Display Text Parameters */
+/* Display text Parameters */
 
-struct Text {
+struct text {
     std::string str;
     Vector2 position = {0.50f, 0.50f};
     float size = 32.0f;
@@ -168,54 +168,54 @@ struct Text {
     Font* font = &menu_font;
 };
 
-inline Text game_title = {
+inline text game_title = {
     "Platformer",
     {0.50f, 0.50f},
     100.0f,
     RED
 };
 
-inline Text game_subtitle = {
+inline text game_subtitle = {
     "Press Enter to Start",
     {0.50f, 0.65f}
 };
 
-inline Text game_paused = {
+inline text game_paused = {
     "Press Escape to Resume"
 };
 
-inline Text death_title = {
+inline text death_title = {
     "You Died!",
     {0.50f, 0.50f},
     80.0f,
     RED
 };
 
-inline Text death_subtitle = {
+inline text death_subtitle = {
     "Press Enter to Try Again",
     {0.50f, 0.65f}
 };
 
-inline Text game_over_title = {
+inline text game_over_title = {
     "Game Over",
     {0.50f, 0.50f},
     120.0f,
     RED
 };
 
-inline Text game_over_subtitle = {
+inline text game_over_subtitle = {
     "Press Enter to Restart",
     {0.50f, 0.675f}
 };
 
-inline Text victory_title = {
+inline text victory_title = {
     "You Won!",
     {0.50f, 0.50f},
     100.0f,
     RED
 };
 
-inline Text victory_subtitle = {
+inline text victory_subtitle = {
     "Press Enter to go back to menu",
     {0.50f, 0.65f}
 };
@@ -303,7 +303,7 @@ inline game_state game_state = MENU_STATE;
 
 // GRAPHICS_H
 
-void draw_text(Text &text);
+void draw_text(text &text);
 void derive_graphics_metrics_from_loaded_level();
 void draw_game_overlay();
 void draw_level();
@@ -346,14 +346,6 @@ void move_player_horizontally(float delta);
 void update_player();
 void update_player_gravity();
 
-// ENEMY_H
-
-void spawn_enemies();
-
-void update_enemies();
-
-bool is_colliding_with_enemies(Vector2 pos);
-void remove_colliding_enemy(Vector2 pos);
 
 // ASSETS_H
 

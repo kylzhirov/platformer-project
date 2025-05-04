@@ -1,6 +1,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include "enemy_manager.h"
 #include "globals.h"
 
 bool is_inside_level(int row, int column) {
@@ -34,7 +35,7 @@ char& get_collider(Vector2 pos, char look_for) {
 
     for (int row = pos.y - 1; row < pos.y + 1; ++row) {
         for (int column = pos.x - 1; column < pos.x + 1; ++column) {
-            // Check if the cell is out-of-bounds
+           // Check if the cell is out-of-bounds
             if (!is_inside_level(row, column)) continue;
             if (get_level_cell(row, column) == look_for) {
                 Rectangle block_hitbox = {(float) column, (float) row, 1.0f, 1.0f};
@@ -79,7 +80,7 @@ void load_level(int offset) {
 
     // Instantiate entities
     spawn_player();
-    spawn_enemies();
+    EnemyManager::get_instance().spawn_enemies();
 
     // Calculate positioning and sizes
     derive_graphics_metrics_from_loaded_level();
@@ -100,5 +101,4 @@ char& get_level_cell(size_t row, size_t column) {
 void set_level_cell(size_t row, size_t column, char chr) {
     get_level_cell(row, column) = chr;
 }
-
 #endif //LEVEL_H
