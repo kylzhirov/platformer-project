@@ -1,54 +1,50 @@
-#include <raylib.h>
-
 #include "enemy_manager.h"
 #include "globals.h"
+#include "level.h"
+#include "level_manager.h"
 
-
-void EnemyManager::spawn_enemies() {
+void EnemiesManager::spawn_enemies() {
     // Create enemies, incrementing their amount every time a new one is created
     enemies.clear();
 
-    for (size_t row = 0; row < current_level.rows; ++row) {
-        for (size_t column = 0; column < current_level.columns; ++column) {
-            const char cell = get_level_cell(row, column);
-
-            if (cell == ENEMY) {
+    for (size_t row = 0; row < LevelManager::get_instance().get_current_level().get_rows(); ++row) {
+        for (size_t column = 0; column < LevelManager::get_instance().get_current_level().get_columns(); ++column) {
+            if (const char cell = Level::get_level_cell(row, column); cell == ENEMY) {
                 // Instantiate and add an enemy to the level
                 enemies.push_back({
                         {static_cast<float>(column), static_cast<float>(row)},
                         true
                 });
 
-                set_level_cell(row, column, AIR);
+                LevelManager::get_instance().set_level_cell(row, column, AIR);
             }
         }
     }
 }
 
-void EnemyManager::update_enemies() {
+void EnemiesManager::update_enemies() {
     for (auto &enemy : enemies) {
         // Find the enemy's next x
         float next_x = enemy.get_pos().x;
-        next_x += (enemy.is_looking_right() ? ENEMY_MOVEMENT_SPEED : -ENEMY_MOVEMENT_SPEED);
+        next_x += enemy.is_looking_right() ? ENEMY_MOVEMENT_SPEED : -ENEMY_MOVEMENT_SPEED;
 
         // If its next position collides with a wall, turn around
-        if (is_colliding({next_x, enemy.get_pos().y}, WALL)) {
+        if (LevelManager::get_instance().is_colliding({next_x, enemy.get_pos().y}, WALL)) {
             enemy.set_looking_right(!enemy.is_looking_right());
         }
         // Otherwise, keep moving
         else {
-
             enemy.set_pos(Vector2{next_x, enemy.get_pos().y});
         }
     }
 }
 
 // Custom is_colliding function for enemies
-bool EnemyManager::is_colliding_with_enemies(const Vector2 pos) const {
-    const Rectangle entity_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
+bool EnemiesManager::is_colliding_with_enemies(const Vector2 pos) const {
+    Rectangle entity_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
 
     for (auto &enemy : enemies) {
-        Rectangle enemy_hitbox = {(float) enemy.get_pos().x, (float) enemy.get_pos().y, 1.0f, 1.0f};
+        const Rectangle enemy_hitbox = { enemy.get_pos().x, enemy.get_pos().y, 1.0f, 1.0f};
         if (CheckCollisionRecs(entity_hitbox, enemy_hitbox)) {
             return true;
         }
@@ -56,13 +52,12 @@ bool EnemyManager::is_colliding_with_enemies(const Vector2 pos) const {
     return false;
 }
 
-void EnemyManager::remove_colliding_enemy(const Vector2 pos) {
-    Rectangle entity_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
+void EnemiesManager::remove_colliding_enemy(const Vector2 pos) {
+    const Rectangle entity_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
 
     for (auto it = enemies.begin(); it != enemies.end(); ++it) {
-        Rectangle enemy_hitbox = {(float) it->get_pos().x, (float) it->get_pos().y, 1.0f, 1.0f};
         // Erase a colliding enemy
-        if (CheckCollisionRecs(entity_hitbox, enemy_hitbox)) {
+        if (const Rectangle enemy_hitbox = {(float) it->get_pos().x, (float) it->get_pos().y, 1.0f, 1.0f}; CheckCollisionRecs(entity_hitbox, enemy_hitbox)) {
             enemies.erase(it);
 
             // Call the function again to remove any remaining colliding enemies
@@ -70,5 +65,18 @@ void EnemyManager::remove_colliding_enemy(const Vector2 pos) {
             remove_colliding_enemy(pos);
             return;
         }
+    }
+}
+void EnemiesManager::draw_enemies() {
+    // Go over all enemies and draw them, once again accounting to the player's movement and horizontal shift
+    for (auto &enemy : getInstance().get_enemies()) {
+        horizontal_shift = (screen_size.x - cell_size) / 2;
+
+        Vector2 pos = {
+            (enemy.get_pos().x - player_pos.x) * cell_size + horizontal_shift,
+            enemy.get_pos().y * cell_size
+    };
+
+        draw_sprite(enemy_walk, pos, cell_size);
     }
 }

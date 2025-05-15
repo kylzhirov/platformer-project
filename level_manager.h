@@ -35,10 +35,13 @@ public:
     static void unload_level();
     void set_level_cell(size_t row,  size_t column, char chr);
 
-    private:
+
+private:
     LevelManager() = default;
     ~LevelManager() = default;
     Level current_level;
     char* current_level_data;
 };
+
+
 #endif //LEVEL_MANAGER_H

@@ -2,7 +2,7 @@
 #define GLOBALS_H
 
 #include "raylib.h"
-
+#include "level.h"
 #include <vector>
 #include <string>
 #include <cstddef>
@@ -18,13 +18,6 @@ inline const char WALL      = '#',
                   ENEMY     = '&',
                   COIN      = '*',
                   EXIT      = 'E';
-
-/* Levels */
-
-struct Level {
-    size_t rows = 0, columns = 0;
-    char *data = nullptr;
-};
 
 inline char LEVEL_1_DATA[] = {
         '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-',
@@ -95,8 +88,8 @@ inline Level LEVELS[LEVEL_COUNT] = {
 
 /* Loaded Level Data */
 
-inline Level current_level;
-inline char *current_level_data;
+//inline Level current_level;
+//inline char *current_level_data;
 
 /* Timer-mechanic related */
 inline const int MAX_LEVEL_TIME = 50 * 60;
@@ -126,14 +119,6 @@ inline int player_level_scores[LEVEL_COUNT];
 inline const int MAX_PLAYER_LIVES = 3;
 inline int player_lives = MAX_PLAYER_LIVES;
 
-/* Enemy data */
-
-/*struct Enemy {*/
-/*    Vector2 pos;*/
-/*    bool is_looking_right;*/
-/*};*/
-
-/*inline std::vector<Enemy> enemies;*/
 
 /* Graphic Metrics */
 
@@ -157,9 +142,9 @@ inline const float PARALLAX_LAYERED_SPEED_DIFFERENCE = 3.0f;
 
 inline Font menu_font;
 
-/* Display text Parameters */
+/* Display Text Parameters */
 
-struct text {
+struct Text {
     std::string str;
     Vector2 position = {0.50f, 0.50f};
     float size = 32.0f;
@@ -168,54 +153,54 @@ struct text {
     Font* font = &menu_font;
 };
 
-inline text game_title = {
+inline Text game_title = {
     "Platformer",
     {0.50f, 0.50f},
     100.0f,
     RED
 };
 
-inline text game_subtitle = {
+inline Text game_subtitle = {
     "Press Enter to Start",
     {0.50f, 0.65f}
 };
 
-inline text game_paused = {
+inline Text game_paused = {
     "Press Escape to Resume"
 };
 
-inline text death_title = {
+inline Text death_title = {
     "You Died!",
     {0.50f, 0.50f},
     80.0f,
     RED
 };
 
-inline text death_subtitle = {
+inline Text death_subtitle = {
     "Press Enter to Try Again",
     {0.50f, 0.65f}
 };
 
-inline text game_over_title = {
+inline Text game_over_title = {
     "Game Over",
     {0.50f, 0.50f},
     120.0f,
     RED
 };
 
-inline text game_over_subtitle = {
+inline Text game_over_subtitle = {
     "Press Enter to Restart",
     {0.50f, 0.675f}
 };
 
-inline text victory_title = {
+inline Text victory_title = {
     "You Won!",
     {0.50f, 0.50f},
     100.0f,
     RED
 };
 
-inline text victory_subtitle = {
+inline Text victory_subtitle = {
     "Press Enter to go back to menu",
     {0.50f, 0.65f}
 };
@@ -303,7 +288,7 @@ inline game_state game_state = MENU_STATE;
 
 // GRAPHICS_H
 
-void draw_text(text &text);
+void draw_text(Text &text);
 void derive_graphics_metrics_from_loaded_level();
 void draw_game_overlay();
 void draw_level();
@@ -320,19 +305,6 @@ void animate_victory_menu_background();
 void draw_victory_menu_background();
 void draw_victory_menu();
 
-// LEVEL_H
-
-bool is_inside_level(int row, int column);
-bool is_colliding(Vector2 pos, char look_for = '#');
-char& get_collider(Vector2 pos, char look_for);
-
-void reset_level_index();
-void load_level(int offset = 0);
-void unload_level();
-
-char& get_level_cell(size_t row, size_t column);
-void set_level_cell(size_t row, size_t column, char chr);
-
 // PLAYER_H
 
 void reset_player_stats();
@@ -345,7 +317,6 @@ void kill_player();
 void move_player_horizontally(float delta);
 void update_player();
 void update_player_gravity();
-
 
 // ASSETS_H
 
