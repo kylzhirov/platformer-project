@@ -1,15 +1,24 @@
-#include "level_manager.h"
-#include "enemy_manager.h"
+//
+// Created by CoHHa9_MyXa on 5/16/25.
+//
+// bool is_inside_level(int row, int column);
+// bool is_colliding(Vector2 pos, char look_for);
+// char& get_collider(Vector2 pos, char look_for);
+// void set_current_level(const Level &current_level);
+
+#include <raylib.h>
+
+#include "level.h"
 #include "globals.h"
 #include "player.h"
 
-bool LevelManager::is_inside_level(int row, int column) {
-    if (row < 0 || row >= get_instance().get_current_level().get_rows()) return false;
-    if (column < 0 || column >= get_instance().get_current_level().get_columns()) return false;
+bool Level::is_inside_level(int row, int column) {
+    if (row < 0 || row >= get_instance().get_rows()) return false;
+    if (column < 0 || column >= get_instance().get_columns()) return false;
     return true;
 }
 
-bool LevelManager::is_colliding(Vector2 pos, char look_for) {
+bool Level::is_colliding(Vector2 pos, char look_for) {
     Rectangle entity_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
 
     // Scan the adjacent area in the level to look for a match in collision
@@ -28,7 +37,7 @@ bool LevelManager::is_colliding(Vector2 pos, char look_for) {
     return false;
 }
 
-char& LevelManager::get_collider(Vector2 pos, char look_for) {
+char& Level::get_collider(Vector2 pos, char look_for) {
     // Like is_colliding(), except returns a reference to the colliding object
     Rectangle player_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
 
@@ -50,8 +59,7 @@ char& LevelManager::get_collider(Vector2 pos, char look_for) {
 }
 
 
-
-void LevelManager::load_level(const int offset) {
+void Level::load_level(const int offset) {
     level_index += offset;
 
     // Win logic
@@ -63,18 +71,24 @@ void LevelManager::load_level(const int offset) {
     }
 
     // Level duplication
-    const size_t rows = LEVELS[level_index].get_rows();
-    const size_t columns = LEVELS[level_index].get_columns();
-    current_level_data = new char[rows * columns];
+    const size_t rows = LEVELS[level_index]->get_rows();
+    const size_t columns = LEVELS[level_index]->get_columns();
+    get_instance().set_data(new char[rows * columns]);
 
     for (int row = 0; row < rows; row++) {
         for (int column = 0; column < columns; column++) {
-            const char* source_data = LEVELS[level_index].get_data(); // Use the getter
-            current_level_data[row * columns + column] = source_data[row * columns + column];
+            const char* source_data = LEVELS[level_index]->get_data(); // Use the getter
+            get_instance().data[row * columns + column] = source_data[row * columns + column];
         }
     }
 
-    get_instance().set_current_level(Level{rows, columns, current_level_data});
+    //  current_level = {rows, columns, current_level_data};
+
+    Level& level = Level::get_instance();
+    level.set_rows(rows);
+    level.set_columns(columns);
+    // data is already set
+
     // Instantiate entities
     Player::get_instance().spawn_player();
     EnemiesManager::getInstance().spawn_enemies();
@@ -86,21 +100,26 @@ void LevelManager::load_level(const int offset) {
     timer = MAX_LEVEL_TIME;
 }
 
-void LevelManager::unload_level() {
-    delete[] get_instance().get_current_level_data();
+void Level::unload_level() {
+    delete[] get_instance().data;
 }
 
-// Getters and setters
-void LevelManager::set_level_cell(size_t row,size_t column, char chr) {
-    Level::get_level_cell(row, column) = chr;
-}
-char& Level::get_level_cell(size_t row, size_t column) {
-    return LevelManager::get_instance().get_current_level().data[row * LevelManager::get_instance().get_current_level().get_columns() + column];
-}
-void LevelManager::set_current_level(const Level &current_level) {
-    this->current_level = current_level;
-}
-
-void LevelManager::reset_level_index() {
+void Level::reset_level_index() {
     level_index = 0;
 }
+
+void Level::set_level_cell(size_t row,size_t column, char chr) {
+    get_instance().get_level_cell(row, column) = chr;
+}
+
+
+char& Level::get_level_cell(size_t row, size_t column) {
+    return get_instance().data[row * get_instance().get_columns() + column];
+}
+
+// void Level::set_current_level(const Level &current_level) {
+//     this->current_level = current_level;
+// }
+
+
+

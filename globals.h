@@ -82,8 +82,8 @@ inline Level LEVEL_3 = {
 inline int level_index = 0;
 inline const int LEVEL_COUNT = 3;
 
-inline Level LEVELS[LEVEL_COUNT] = {
-        LEVEL_1, LEVEL_2, LEVEL_3
+inline Level* LEVELS[LEVEL_COUNT] = {
+        &LEVEL_1, &LEVEL_2, &LEVEL_3
 };
 
 /* Loaded Level Data */

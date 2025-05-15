@@ -1,23 +1,22 @@
 #include "enemy_manager.h"
 #include "globals.h"
 #include "level.h"
-#include "level_manager.h"
 #include "player.h"
 
 void EnemiesManager::spawn_enemies() {
     // Create enemies, incrementing their amount every time a new one is created
     enemies.clear();
 
-    for (size_t row = 0; row < LevelManager::get_instance().get_current_level().get_rows(); ++row) {
-        for (size_t column = 0; column < LevelManager::get_instance().get_current_level().get_columns(); ++column) {
-            if (const char cell = Level::get_level_cell(row, column); cell == ENEMY) {
+    for (size_t row = 0; row < Level::get_instance().get_rows(); ++row) {
+        for (size_t column = 0; column < Level::get_instance().get_columns(); ++column) {
+            if (const char cell = Level::get_instance().get_level_cell(row, column); cell == ENEMY) {
                 // Instantiate and add an enemy to the level
                 enemies.push_back({
                         {static_cast<float>(column), static_cast<float>(row)},
                         true
                 });
 
-                LevelManager::get_instance().set_level_cell(row, column, AIR);
+                Level::get_instance().set_level_cell(row, column, AIR);
             }
         }
     }
@@ -30,7 +29,7 @@ void EnemiesManager::update_enemies() {
         next_x += enemy.is_looking_right() ? ENEMY_MOVEMENT_SPEED : -ENEMY_MOVEMENT_SPEED;
 
         // If its next position collides with a wall, turn around
-        if (LevelManager::get_instance().is_colliding({next_x, enemy.get_pos().y}, WALL)) {
+        if (Level::get_instance().is_colliding({next_x, enemy.get_pos().y}, WALL)) {
             enemy.set_looking_right(!enemy.is_looking_right());
         }
         // Otherwise, keep moving
