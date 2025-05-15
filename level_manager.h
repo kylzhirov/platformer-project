@@ -27,7 +27,6 @@ public:
     bool is_inside_level(int row, int column);
     bool is_colliding(Vector2 pos, char look_for);
     char& get_collider(Vector2 pos, char look_for);
-    static void reset_level_index();
     void set_current_level(const Level &current_level);
 
     void load_level(int offset = 0);
@@ -35,6 +34,7 @@ public:
     static void unload_level();
     void set_level_cell(size_t row,  size_t column, char chr);
 
+    void reset_level_index();
 
 private:
     LevelManager() = default;

@@ -1,6 +1,7 @@
 #include "level_manager.h"
 #include "enemy_manager.h"
 #include "globals.h"
+#include "player.h"
 
 bool LevelManager::is_inside_level(int row, int column) {
     if (row < 0 || row >= get_instance().get_current_level().get_rows()) return false;
@@ -48,9 +49,7 @@ char& LevelManager::get_collider(Vector2 pos, char look_for) {
     return Level::get_level_cell(pos.x, pos.y);
 }
 
-void LevelManager::reset_level_index() {
-    level_index = 0;
-}
+
 
 void LevelManager::load_level(const int offset) {
     level_index += offset;
@@ -77,7 +76,7 @@ void LevelManager::load_level(const int offset) {
 
     get_instance().set_current_level(Level{rows, columns, current_level_data});
     // Instantiate entities
-    spawn_player();
+    Player::get_instance().spawn_player();
     EnemiesManager::getInstance().spawn_enemies();
 
     // Calculate positioning and sizes
@@ -100,4 +99,8 @@ char& Level::get_level_cell(size_t row, size_t column) {
 }
 void LevelManager::set_current_level(const Level &current_level) {
     this->current_level = current_level;
+}
+
+void LevelManager::reset_level_index() {
+    level_index = 0;
 }

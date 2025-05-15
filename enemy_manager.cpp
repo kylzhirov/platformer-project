@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "level.h"
 #include "level_manager.h"
+#include "player.h"
 
 void EnemiesManager::spawn_enemies() {
     // Create enemies, incrementing their amount every time a new one is created
@@ -73,7 +74,7 @@ void EnemiesManager::draw_enemies() {
         horizontal_shift = (screen_size.x - cell_size) / 2;
 
         Vector2 pos = {
-            (enemy.get_pos().x - player_pos.x) * cell_size + horizontal_shift,
+            (enemy.get_pos().x - Player::get_instance().get_player_pos().x) * cell_size + horizontal_shift,
             enemy.get_pos().y * cell_size
     };
 
