@@ -86,11 +86,6 @@ inline Level* LEVELS[LEVEL_COUNT] = {
         &LEVEL_1, &LEVEL_2, &LEVEL_3
 };
 
-/* Loaded Level Data */
-
-//inline Level current_level;
-//inline char *current_level_data;
-
 /* Timer-mechanic related */
 inline const int MAX_LEVEL_TIME = 50 * 60;
 inline int timer = MAX_LEVEL_TIME;

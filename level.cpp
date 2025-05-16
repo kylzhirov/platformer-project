@@ -1,11 +1,3 @@
-//
-// Created by CoHHa9_MyXa on 5/16/25.
-//
-// bool is_inside_level(int row, int column);
-// bool is_colliding(Vector2 pos, char look_for);
-// char& get_collider(Vector2 pos, char look_for);
-// void set_current_level(const Level &current_level);
-
 #include <raylib.h>
 
 #include "level.h"
