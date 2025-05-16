@@ -332,6 +332,7 @@ sprite load_sprite(
         bool loop = true,
         size_t frames_to_skip = 3
 );
+
 void unload_sprite(sprite &sprite);
 void draw_sprite(sprite &sprite, Vector2 pos, float width, float height);
 void draw_sprite(sprite &sprite, Vector2 pos, float size);

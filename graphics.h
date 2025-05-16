@@ -94,75 +94,9 @@ void draw_game_overlay() {
     draw_sprite(coin_sprite, {GetRenderWidth() - ICON_SIZE, slight_vertical_offset}, ICON_SIZE);
 }
 
-void draw_level() {
-    // Move the x-axis' center to the middle of the screen
-    horizontal_shift = (screen_size.x - cell_size) / 2;
+// void draw_level();
 
-    for (size_t row = 0; row < Level::get_instance().get_rows(); ++row) {
-        for (size_t column = 0; column < Level::get_instance().get_columns(); ++column) {
-
-            Vector2 pos = {
-                    // Move the level to the left as the player advances to the right,
-                    // shifting to the left to allow the player to be centered later
-                    (static_cast<float>(column) - Player::get_instance().get_player_pos().x) * cell_size + horizontal_shift,
-                    static_cast<float>(row) * cell_size
-            };
-
-            // Draw the level itself
-            char cell = Level::get_instance().get_level_cell(row, column);
-            switch (cell) {
-                case WALL:
-                    draw_image(wall_image, pos, cell_size);
-                    break;
-                case WALL_DARK:
-                    draw_image(wall_dark_image, pos, cell_size);
-                    break;
-                case SPIKE:
-                    draw_image(spike_image, pos, cell_size);
-                    break;
-                case COIN:
-                    draw_sprite(coin_sprite, pos, cell_size);
-                    break;
-                case EXIT:
-                    draw_image(exit_image, pos, cell_size);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    draw_player();
-    EnemiesManager::getInstance().draw_enemies();
-}
-
-void draw_player() {
-    horizontal_shift = (screen_size.x - cell_size) / 2;
-
-    // Shift the camera to the center of the screen to allow to see what is in front of the player
-    Vector2 pos = {
-            horizontal_shift,
-            Player::get_instance().get_player_pos().y * cell_size
-    };
-
-    // Pick an appropriate sprite for the player
-    if (game_state == GAME_STATE) {
-        if (!Player::get_instance().is_player_on_ground()) {
-            draw_image((Player::get_instance().is_looking_forward() ? player_jump_forward_image : player_jump_backwards_image), pos, cell_size);
-        }
-        else if (Player::get_instance().is_moving()) {
-            draw_sprite((Player::get_instance().is_looking_forward() ? player_walk_forward_sprite : player_walk_backwards_sprite), pos, cell_size);
-            Player::get_instance().set_moving(false);
-        }
-        else {
-            draw_image((Player::get_instance().is_looking_forward() ? player_stand_forward_image : player_stand_backwards_image), pos, cell_size);
-        }
-    }
-    else {
-        draw_image(player_dead_image, pos, cell_size);
-    }
-}
-
+// void draw_player();
 
 
 // Menus
@@ -177,7 +111,7 @@ void draw_pause_menu() {
 
 void draw_death_screen() {
     draw_parallax_background();
-    draw_level();
+    Level::get_instance().draw_level();
     draw_game_overlay();
     DrawRectangle(0, 0, GetRenderWidth(), GetRenderHeight(), {0, 0, 0, 100});
     draw_text(death_title);

@@ -1,6 +1,10 @@
 #include <raylib.h>
 
 #include "level.h"
+
+#include <fstream>
+#include <sstream>
+
 #include "globals.h"
 #include "player.h"
 
@@ -69,7 +73,7 @@ void Level::load_level(const int offset) {
 
     for (int row = 0; row < rows; row++) {
         for (int column = 0; column < columns; column++) {
-            const char* source_data = LEVELS[level_index]->get_data(); // Use the getter
+            const char* source_data = LEVELS[level_index]->get_data();
             get_instance().data[row * columns + column] = source_data[row * columns + column];
         }
     }
@@ -108,6 +112,49 @@ void Level::set_level_cell(size_t row,size_t column, char chr) {
 char& Level::get_level_cell(size_t row, size_t column) {
     return get_instance().data[row * get_instance().get_columns() + column];
 }
+
+void Level::draw_level() {
+    // Move the x-axis' center to the middle of the screen
+    horizontal_shift = (screen_size.x - cell_size) / 2;
+
+    for (size_t row = 0; row < Level::get_instance().get_rows(); ++row) {
+        for (size_t column = 0; column < Level::get_instance().get_columns(); ++column) {
+
+            Vector2 pos = {
+                // Move the level to the left as the player advances to the right,
+                // shifting to the left to allow the player to be centered later
+                (static_cast<float>(column) - Player::get_instance().get_player_pos().x) * cell_size + horizontal_shift,
+                static_cast<float>(row) * cell_size
+        };
+
+            // Draw the level itself
+            char cell = Level::get_instance().get_level_cell(row, column);
+            switch (cell) {
+                case WALL:
+                    draw_image(wall_image, pos, cell_size);
+                    break;
+                case WALL_DARK:
+                    draw_image(wall_dark_image, pos, cell_size);
+                    break;
+                case SPIKE:
+                    draw_image(spike_image, pos, cell_size);
+                    break;
+                case COIN:
+                    draw_sprite(coin_sprite, pos, cell_size);
+                    break;
+                case EXIT:
+                    draw_image(exit_image, pos, cell_size);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    Player::get_instance().draw_player();
+    EnemiesManager::getInstance().draw_enemies();
+}
+
 
 // void Level::set_current_level(const Level &current_level) {
 //     this->current_level = current_level;

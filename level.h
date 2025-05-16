@@ -29,6 +29,7 @@ public:
     void set_current_level(const Level &current_level);
     void set_level_cell(size_t row,  size_t column, char chr);
 
+    void draw_level();
     void load_level(int offset = 0);
     void unload_level();
 
@@ -64,7 +65,6 @@ public:
     void set_data(char *data) {
         this->data = data;
     }
-
 
 private:
     size_t rows;

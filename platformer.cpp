@@ -95,7 +95,7 @@ void draw_game() {
         case GAME_STATE:
             ClearBackground(BLACK);
             draw_parallax_background();
-            draw_level();
+            Level::get_instance().draw_level();
             draw_game_overlay();
             break;
 

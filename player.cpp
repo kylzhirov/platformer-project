@@ -88,56 +88,84 @@ void Player::update_player_gravity() {
 }
 
 void Player::update_player() {
-        Player::get_instance().update_player_gravity();
+    Player::get_instance().update_player_gravity();
 
-        // Interacting with other level elements
-        if (Level::get_instance().is_colliding(Player::get_instance().get_player_pos(), COIN)) {
-            Level::get_instance().get_collider(Player::get_instance().get_player_pos(), COIN) = AIR; // Removes the coin
-            increment_player_score();
-        }
+    // Interacting with other level elements
+    if (Level::get_instance().is_colliding(Player::get_instance().get_player_pos(), COIN)) {
+        Level::get_instance().get_collider(Player::get_instance().get_player_pos(), COIN) = AIR; // Removes the coin
+        increment_player_score();
+    }
 
-        if (Level::get_instance().is_colliding(Player::get_instance().get_player_pos(), EXIT)) {
-            // Reward player for being swift
-            if (timer > 0) {
-                // For every 9 seconds remaining, award the player 1 coin
-                timer -= 25;
-                time_to_coin_counter += 5;
+    if (Level::get_instance().is_colliding(Player::get_instance().get_player_pos(), EXIT)) {
+        // Reward player for being swift
+        if (timer > 0) {
+            // For every 9 seconds remaining, award the player 1 coin
+            timer -= 25;
+            time_to_coin_counter += 5;
 
-                if (time_to_coin_counter / 60 > 1) {
-                    increment_player_score();
-                    time_to_coin_counter = 0;
-                }
-            }
-            else {
-                // Allow the player to exit after the level timer goes to zero
-                Level::get_instance().load_level(1);
-                PlaySound(exit_sound);
+            if (time_to_coin_counter / 60 > 1) {
+                increment_player_score();
+                time_to_coin_counter = 0;
             }
         }
         else {
-            // Decrement the level timer if not at an exit
-            if (timer >= 0) timer--;
-        }
-
-        // Kill the player if they touch a spike or fall below the level
-        if (Level::get_instance().is_colliding(Player::get_instance().get_player_pos(), SPIKE) || Player::get_instance().get_player_pos().y > Level::get_instance().get_rows()) {
-            kill_player();
-        }
-
-        // Upon colliding with an enemy...
-        if (EnemiesManager::getInstance().is_colliding_with_enemies(Player::get_instance().get_player_pos())) {
-            // ...check if their velocity is downwards...
-            if (player_y_velocity > 0) {
-                // ...if yes, award the player and kill the enemy
-                EnemiesManager::getInstance().remove_colliding_enemy(Player::get_instance().get_player_pos());
-                PlaySound(kill_enemy_sound);
-
-                increment_player_score();
-                player_y_velocity = -BOUNCE_OFF_ENEMY;
-            }
-            else {
-                // ...if not, kill the player
-                kill_player();
-            }
+            // Allow the player to exit after the level timer goes to zero
+            Level::get_instance().load_level(1);
+            PlaySound(exit_sound);
         }
     }
+    else {
+        // Decrement the level timer if not at an exit
+        if (timer >= 0) timer--;
+    }
+
+    // Kill the player if they touch a spike or fall below the level
+    if (Level::get_instance().is_colliding(Player::get_instance().get_player_pos(), SPIKE) || Player::get_instance().get_player_pos().y > Level::get_instance().get_rows()) {
+        kill_player();
+    }
+
+    // Upon colliding with an enemy...
+    if (EnemiesManager::getInstance().is_colliding_with_enemies(Player::get_instance().get_player_pos())) {
+        // ...check if their velocity is downwards...
+        if (player_y_velocity > 0) {
+            // ...if yes, award the player and kill the enemy
+            EnemiesManager::getInstance().remove_colliding_enemy(Player::get_instance().get_player_pos());
+            PlaySound(kill_enemy_sound);
+
+            increment_player_score();
+            player_y_velocity = -BOUNCE_OFF_ENEMY;
+        }
+        else {
+            // ...if not, kill the player
+            kill_player();
+        }
+    }
+}
+
+
+void Player::draw_player() {
+    horizontal_shift = (screen_size.x - cell_size) / 2;
+
+    // Shift the camera to the center of the screen to allow to see what is in front of the player
+    Vector2 pos = {
+        horizontal_shift,
+        Player::get_instance().get_player_pos().y * cell_size
+};
+
+    // Pick an appropriate sprite for the player
+    if (game_state == GAME_STATE) {
+        if (!Player::get_instance().is_player_on_ground()) {
+            draw_image((Player::get_instance().is_looking_forward() ? player_jump_forward_image : player_jump_backwards_image), pos, cell_size);
+        }
+        else if (Player::get_instance().is_moving()) {
+            draw_sprite((Player::get_instance().is_looking_forward() ? player_walk_forward_sprite : player_walk_backwards_sprite), pos, cell_size);
+            Player::get_instance().set_moving(false);
+        }
+        else {
+            draw_image((Player::get_instance().is_looking_forward() ? player_stand_forward_image : player_stand_backwards_image), pos, cell_size);
+        }
+    }
+    else {
+        draw_image(player_dead_image, pos, cell_size);
+    }
+}

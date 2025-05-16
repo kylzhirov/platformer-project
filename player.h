@@ -18,6 +18,7 @@ public:
     Player(Player&&) = delete;
     Player operator=(Player&&) = delete;
 
+    void draw_player();
 
     void reset_player_stats();
 
@@ -82,8 +83,6 @@ public:
     void set_moving(bool moving) {
         this->moving = moving;
     }
-
-
 
 private:
     Vector2 player_pos;
