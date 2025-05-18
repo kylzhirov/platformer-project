@@ -134,7 +134,7 @@ void Player::update_player() {
             PlaySound(kill_enemy_sound);
 
             increment_player_score();
-            player_y_velocity = -BOUNCE_OFF_ENEMY;
+            player_y_velocity = -BOUNCE_OFF_ENEMY * 3;
         }
         else {
             // ...if not, kill the player
