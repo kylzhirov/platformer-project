@@ -5,6 +5,7 @@
 #include "enemy_manager.h"
 #include "player.h"
 #include "level.h"
+#include "level_manager.h"
 
 void draw_text(Text &text) {
     // Measure the text, center it to the required position, and draw it
@@ -23,7 +24,7 @@ void derive_graphics_metrics_from_loaded_level() {
     screen_size.x  = static_cast<float>(GetScreenWidth());
     screen_size.y = static_cast<float>(GetScreenHeight());
 
-    cell_size = screen_size.y / static_cast<float>(LEVELS[level_index]->get_rows());
+    cell_size = screen_size.y / static_cast<float>(LevelManager::get_instance().get_levels()[level_index].get_rows());
     screen_scale = std::min(screen_size.x, screen_size.y) / SCREEN_SCALE_DIVISOR;
 
     // Parallax background setup
@@ -111,7 +112,7 @@ void draw_pause_menu() {
 
 void draw_death_screen() {
     draw_parallax_background();
-    Level::get_instance().draw_level();
+    LevelManager::get_instance().draw_level();
     draw_game_overlay();
     DrawRectangle(0, 0, GetRenderWidth(), GetRenderHeight(), {0, 0, 0, 100});
     draw_text(death_title);
