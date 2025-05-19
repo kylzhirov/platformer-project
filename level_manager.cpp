@@ -1,16 +1,18 @@
+#include <exception>
+#include <fstream>
+
 #include "level_manager.h"
 #include "enemy_manager.h"
 #include "level.h"
 #include "raylib.h"
 #include "globals.h"
 #include "player.h"
-#include <exception>
-#include <fstream>
+
 
 
 bool LevelManager::is_inside_level(int row, int column) {
-    if (row < 0 || row >= LevelManager::get_instance().get_current_level().get_rows()) return false;
-    if (column < 0 || column >= LevelManager::get_instance().get_current_level().get_columns()) return false;
+    if (row < 0 || row >= get_instance().get_current_level().get_rows()) return false;
+    if (column < 0 || column >= get_instance().get_current_level().get_columns()) return false;
     return true;
 }
 
@@ -21,8 +23,8 @@ bool LevelManager::is_colliding(Vector2 pos, char look_for) {
     for (int row = pos.y - 1; row < pos.y + 1; ++row) {
         for (int column = pos.x - 1; column < pos.x + 1; ++column) {
             // Check if the cell is out-of-bounds
-            if (!LevelManager::get_instance().is_inside_level(row, column)) continue;
-            if (LevelManager::get_instance().get_current_level().get_level_cell(row, column) == look_for) {
+            if (!get_instance().is_inside_level(row, column)) continue;
+            if (get_instance().get_current_level().get_level_cell(row, column) == look_for) {
                 Rectangle block_hitbox = {(float) column, (float) row, 1.0f, 1.0f};
                 if (CheckCollisionRecs(entity_hitbox, block_hitbox)) {
                     return true;
@@ -40,18 +42,18 @@ char& LevelManager::get_collider(Vector2 pos, char look_for) {
     for (int row = pos.y - 1; row < pos.y + 1; ++row) {
         for (int column = pos.x - 1; column < pos.x + 1; ++column) {
             // Check if the cell is out-of-bounds
-            if (!LevelManager::get_instance().is_inside_level(row, column)) continue;
-            if (LevelManager::get_instance().get_current_level().get_level_cell(row, column) == look_for) {
+            if (!get_instance().is_inside_level(row, column)) continue;
+            if (get_instance().get_current_level().get_level_cell(row, column) == look_for) {
                 Rectangle block_hitbox = {(float) column, (float) row, 1.0f, 1.0f};
                 if (CheckCollisionRecs(player_hitbox, block_hitbox)) {
-                    return LevelManager::get_instance().get_current_level().get_level_cell(row, column);
+                    return get_instance().get_current_level().get_level_cell(row, column);
                 }
             }
         }
     }
 
     // If failed, get an approximation
-    return LevelManager::get_instance().get_current_level().get_level_cell(pos.x, pos.y);
+    return get_instance().get_current_level().get_level_cell(pos.x, pos.y);
 }
 
 void LevelManager::reset_level_index() {
@@ -82,7 +84,7 @@ void LevelManager::load_level(int offset) {
             current_level_data[row * columns + column] = source_data[row * columns + column];
         }
     }
-    LevelManager::get_instance().set_current_level(Level{rows, columns, current_level_data});
+    get_instance().set_current_level(Level{rows, columns, current_level_data});
     Player::get_instance().spawn_player();
     EnemiesManager::getInstance().spawn_enemies();
 
@@ -93,14 +95,14 @@ void LevelManager::load_level(int offset) {
 }
 
 void LevelManager::unload_level() {
-    delete[] LevelManager::get_instance().get_current_level_data();
+    delete[] get_instance().get_current_level_data();
 }
 void LevelManager::draw_level() {
     // Move the x-axis' center to the middle of the screen
     horizontal_shift = (screen_size.x - cell_size) / 2;
 
-    for (size_t row = 0; row < LevelManager::get_instance().get_current_level().get_rows(); ++row) {
-        for (size_t column = 0; column < LevelManager::get_instance().get_current_level().get_columns(); ++column) {
+    for (size_t row = 0; row < get_instance().get_current_level().get_rows(); ++row) {
+        for (size_t column = 0; column < get_instance().get_current_level().get_columns(); ++column) {
 
             Vector2 pos = {
                 // Move the level to the left as the player advances to the right,
@@ -110,7 +112,7 @@ void LevelManager::draw_level() {
         };
 
             // Draw the level itself
-            char cell = LevelManager::get_instance().get_current_level().get_level_cell(row, column);
+            char cell = get_instance().get_current_level().get_level_cell(row, column);
             switch (cell) {
                 case WALL:
                     draw_image(wall_image, pos, cell_size);
@@ -136,14 +138,9 @@ void LevelManager::draw_level() {
     Player::get_instance().draw_player();
     EnemiesManager::getInstance().draw_enemies();
 }
-// Getters and setters
-
-// char& Level::get_level_cell(size_t row, size_t column) {
-//     return LevelManager::get_instance().get_current_level().data[row * LevelManager::get_instance().get_current_level().get_columns() + column];
-// }
 
 void LevelManager::set_level_cell(size_t row, size_t column, char chr) {
-    LevelManager::get_instance().get_current_level().get_level_cell(row, column) = chr;
+    get_instance().get_current_level().get_level_cell(row, column) = chr;
 }
 
 void LevelManager::set_current_level(const Level &current_level) {

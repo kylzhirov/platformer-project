@@ -25,7 +25,6 @@ public:
         return data;
     }
 
-
     char& get_level_cell(size_t row, size_t column) {
         return data[row * get_columns() + column];
     }
