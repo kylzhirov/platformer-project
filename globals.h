@@ -213,52 +213,9 @@ inline game_state game_state = MENU_STATE;
 
 /* Forward Declarations */
 
-// GRAPHICS_H
-
-
-
-// PLAYER_H
-
-// void reset_player_stats();
-// void increment_player_score();
-// int get_total_player_score();
-//
-// void spawn_player();
-// void kill_player();
-//
-// void move_player_horizontally(float delta);
-// void update_player();
-// void update_player_gravity();
-
-// ASSETS_H
-
-void load_fonts();
-void unload_fonts();
-
-void load_images();
-void unload_images();
-
-void draw_image(Texture2D image, Vector2 pos, float width, float height);
-void draw_image(Texture2D image, Vector2 pos, float size);
-
-sprite load_sprite(
-        const std::string &file_name_prefix,
-        const std::string &file_name_suffix,
-        size_t frame_count = 1,
-        bool loop = true,
-        size_t frames_to_skip = 3
-);
-
-void unload_sprite(sprite &sprite);
-void draw_sprite(sprite &sprite, Vector2 pos, float width, float height);
-void draw_sprite(sprite &sprite, Vector2 pos, float size);
-
-void load_sounds();
-void unload_sounds();
-
 // UTILITIES_H
 
-float rand_from_to(float from, float to);
-float rand_up_to(float to);
+// float rand_from_to(float from, float to);
+// float rand_up_to(float to);
 
 #endif // GLOBALS_H

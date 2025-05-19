@@ -3,6 +3,7 @@
 #include "player.h"
 #include "level_manager.h"
 #include "game.h"
+#include "assets.h"
 
 Vector2 currentPos = Player::get_instance().get_player_pos();
 
@@ -134,17 +135,17 @@ void Player::draw_player() {
     // Pick an appropriate sprite for the player
     if (game_state == GAME_STATE) {
         if (!get_instance().is_player_on_ground()) {
-            draw_image((get_instance().is_looking_forward() ? player_jump_forward_image : player_jump_backwards_image), pos, cell_size);
+            Assets::get_instance().draw_image((get_instance().is_looking_forward() ? player_jump_forward_image : player_jump_backwards_image), pos, cell_size);
         }
         else if (get_instance().is_moving()) {
-            draw_sprite((get_instance().is_looking_forward() ? player_walk_forward_sprite : player_walk_backwards_sprite), pos, cell_size);
+            Assets::get_instance().draw_sprite((get_instance().is_looking_forward() ? player_walk_forward_sprite : player_walk_backwards_sprite), pos, cell_size);
             get_instance().set_moving(false);
         }
         else {
-            draw_image((Player::get_instance().is_looking_forward() ? player_stand_forward_image : player_stand_backwards_image), pos, cell_size);
+            Assets::get_instance().draw_image((Player::get_instance().is_looking_forward() ? player_stand_forward_image : player_stand_backwards_image), pos, cell_size);
         }
     }
     else {
-        draw_image(player_dead_image, pos, cell_size);
+        Assets::get_instance().draw_image(player_dead_image, pos, cell_size);
     }
 }

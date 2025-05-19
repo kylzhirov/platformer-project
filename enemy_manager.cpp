@@ -3,6 +3,7 @@
 #include "level.h"
 #include "level_manager.h"
 #include "player.h"
+#include "assets.h"
 
 void EnemyManager::update_enemies() {
     for (auto &enemy : enemies) {
@@ -60,7 +61,7 @@ void EnemyManager::draw_enemies() {
             enemy.get_pos().y * cell_size
     };
 
-        draw_sprite(enemy_walk, pos, cell_size);
+        Assets::get_instance().draw_sprite(enemy_walk, pos, cell_size);
     }
 }
 

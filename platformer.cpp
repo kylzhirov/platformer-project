@@ -133,9 +133,9 @@ int main() {
     SetTargetFPS(60);
     HideCursor();
 
-    load_fonts();
-    load_images();
-    load_sounds();
+    Assets::get_instance().load_fonts();
+    Assets::get_instance().load_images();
+    Assets::get_instance().load_sounds();
 
     try {
         LevelManager::get_instance().rle_load("data/levels.rll");
@@ -157,9 +157,9 @@ int main() {
 
 
     LevelManager::get_instance().unload_level();
-    unload_sounds();
-    unload_images();
-    unload_fonts();
+    Assets::get_instance().unload_sounds();
+    Assets::get_instance().unload_images();
+    Assets::get_instance().unload_fonts();
 
     CloseAudioDevice();
     CloseWindow();

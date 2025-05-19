@@ -2,6 +2,8 @@
 #include "graphics.h"
 #include "globals.h"
 #include "player.h"
+#include "assets.h"
+#include "utilities.h"
 
 void Graphics::draw_text(Text &text) {
     // Measure the text, center it to the required position, and draw it
@@ -57,14 +59,14 @@ void Graphics::draw_parallax_background() {
 
     // Each layer is drawn twice, side by side, the first starting from its offset, and the other from its offset + background_size
     // This ensures a seamless scrolling effect, because when one copy moves out of sight, the second jumps into its place.
-    draw_image(background,   {background_offset + background_size.x, background_y_offset},   background_size.x, background_size.y);
-    draw_image(background,   {background_offset,                     background_y_offset},   background_size.x, background_size.y);
+    Assets::get_instance().draw_image(background,   {background_offset + background_size.x, background_y_offset},   background_size.x, background_size.y);
+    Assets::get_instance().draw_image(background,   {background_offset,                     background_y_offset},   background_size.x, background_size.y);
 
-    draw_image(middleground, {middleground_offset + background_size.x, background_y_offset}, background_size.x, background_size.y);
-    draw_image(middleground, {middleground_offset,                     background_y_offset}, background_size.x, background_size.y);
+    Assets::get_instance().draw_image(middleground, {middleground_offset + background_size.x, background_y_offset}, background_size.x, background_size.y);
+    Assets::get_instance().draw_image(middleground, {middleground_offset,                     background_y_offset}, background_size.x, background_size.y);
 
-    draw_image(foreground,   {foreground_offset + background_size.x, background_y_offset},   background_size.x, background_size.y);
-    draw_image(foreground,   {foreground_offset,                     background_y_offset},   background_size.x, background_size.y);
+    Assets::get_instance().draw_image(foreground,   {foreground_offset + background_size.x, background_y_offset},   background_size.x, background_size.y);
+    Assets::get_instance().draw_image(foreground,   {foreground_offset,                     background_y_offset},   background_size.x, background_size.y);
 }
 
 void Graphics::draw_game_overlay() {
@@ -76,7 +78,7 @@ void Graphics::draw_game_overlay() {
     // Hearts
     for (int i = 0; i < player_lives; i++) {
         const float SPACE_BETWEEN_HEARTS = 4.0f * screen_scale;
-        draw_image(heart_image, {ICON_SIZE * i + SPACE_BETWEEN_HEARTS, slight_vertical_offset}, ICON_SIZE);
+        Assets::get_instance().draw_image(heart_image, {ICON_SIZE * i + SPACE_BETWEEN_HEARTS, slight_vertical_offset}, ICON_SIZE);
     }
 
     // Timer
@@ -88,7 +90,7 @@ void Graphics::draw_game_overlay() {
     Vector2 score_dimensions = MeasureTextEx(menu_font, std::to_string(Player::get_instance().get_total_player_score()).c_str(), ICON_SIZE, 2.0f);
     Vector2 score_position = {GetRenderWidth() - score_dimensions.x - ICON_SIZE, slight_vertical_offset};
     DrawTextEx(menu_font, std::to_string(Player::get_instance().get_total_player_score()).c_str(), score_position, ICON_SIZE, 2.0f, WHITE);
-    draw_sprite(coin_sprite, {GetRenderWidth() - ICON_SIZE, slight_vertical_offset}, ICON_SIZE);
+    Assets::get_instance().draw_sprite(coin_sprite, {GetRenderWidth() - ICON_SIZE, slight_vertical_offset}, ICON_SIZE);
 }
 
 // void draw_level();

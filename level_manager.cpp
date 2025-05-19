@@ -10,6 +10,7 @@
 #include "player.h"
 #include "level_manager.h"
 #include "graphics.h"
+#include "assets.h"
 
 void LevelManager::draw_level() {
     // Move the x-axis' center to the middle of the screen
@@ -29,19 +30,19 @@ void LevelManager::draw_level() {
             char cell = get_instance().get_current_level().get_level_cell(row, column);
             switch (cell) {
                 case WALL:
-                    draw_image(wall_image, pos, cell_size);
+                    Assets::get_instance().draw_image(wall_image, pos, cell_size);
                     break;
                 case WALL_DARK:
-                    draw_image(wall_dark_image, pos, cell_size);
+                    Assets::get_instance().draw_image(wall_dark_image, pos, cell_size);
                     break;
                 case SPIKE:
-                    draw_image(spike_image, pos, cell_size);
+                    Assets::get_instance().draw_image(spike_image, pos, cell_size);
                     break;
                 case COIN:
-                    draw_sprite(coin_sprite, pos, cell_size);
+                    Assets::get_instance().draw_sprite(coin_sprite, pos, cell_size);
                     break;
                 case EXIT:
-                    draw_image(exit_image, pos, cell_size);
+                    Assets::get_instance().draw_image(exit_image, pos, cell_size);
                     break;
                 default:
                     break;
