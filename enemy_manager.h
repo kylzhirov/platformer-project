@@ -17,13 +17,13 @@ public:
     EnemyManager(EnemyManager&&) = delete;
     EnemyManager operator=(EnemyManager&&) = delete;
 
-
+    void spawn_enemies();
     void update_enemies();
     void remove_colliding_enemy(Vector2 pos);
     void draw_enemies();
 
     [[nodiscard]] bool is_colliding_with_enemies(Vector2 pos) const;
-    [[nodiscard]] std::vector<Enemy> get_enemies() const {
+    [[nodiscard]] std::vector<Enemy>& get_enemies() {
         return enemies;
     }
 

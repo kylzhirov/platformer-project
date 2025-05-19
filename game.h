@@ -13,7 +13,7 @@ public:
     Game(Game&&) = delete;
     Game operator=(Game&&) = delete;
 
-    void spawn_enemies();
+
     void kill_player();
     void spawn_player();
 

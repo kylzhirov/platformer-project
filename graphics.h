@@ -1,10 +1,6 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include "globals.h"
-#include "enemy_manager.h"
-#include "player.h"
-#include "level.h"
 #include "level_manager.h"
 
 void draw_text(Text &text) {

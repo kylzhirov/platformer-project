@@ -29,21 +29,3 @@ void Game::spawn_player() {
     }
 }
 
-void Game::spawn_enemies() {
-    // Create enemies, incrementing their amount every time a new one is created
-    EnemyManager::get_instance().get_enemies().clear();
-
-    for (size_t row = 0; row < LevelManager::get_instance().get_current_level().get_rows(); ++row) {
-        for (size_t column = 0; column < LevelManager::get_instance().get_current_level().get_columns(); ++column) {
-            if (const char cell = LevelManager::get_instance().get_current_level().get_level_cell(row, column); cell == ENEMY) {
-                // Instantiate and add an enemy to the level
-                EnemyManager::get_instance().get_enemies().push_back({
-                        {static_cast<float>(column), static_cast<float>(row)},
-                        true
-                });
-
-                LevelManager::get_instance().set_level_cell(row, column, AIR);
-            }
-        }
-    }
-}

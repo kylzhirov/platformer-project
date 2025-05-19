@@ -109,6 +109,20 @@ void Player::update_player_gravity() {
     }
 }
 
+int Player::get_total_player_score() {
+    int sum = 0;
+
+    for (int i = 0; i < LEVEL_COUNT; i++) {
+        sum += player_level_scores[i];
+    }
+
+    return sum;
+}
+
+void Player::reset_level_score(int level) {
+    player_level_scores[level] = 0;
+}
+
 void Player::draw_player() {
     horizontal_shift = (screen_size.x - cell_size) / 2;
 
@@ -133,18 +147,4 @@ void Player::draw_player() {
     else {
         draw_image(player_dead_image, pos, cell_size);
     }
-}
-
-int Player::get_total_player_score() {
-    int sum = 0;
-
-    for (int i = 0; i < LEVEL_COUNT; i++) {
-        sum += player_level_scores[i];
-    }
-
-    return sum;
-}
-
-void Player::reset_level_score(int level) {
-    player_level_scores[level] = 0;
 }

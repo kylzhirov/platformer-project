@@ -128,7 +128,7 @@ void LevelManager::load_level(int offset) {
     }
     get_instance().set_current_level(Level{rows, columns, current_level_data});
     Game::get_instance().spawn_player();
-    Game::get_instance().spawn_enemies();
+    EnemyManager::get_instance().spawn_enemies();
 
     derive_graphics_metrics_from_loaded_level();
 
