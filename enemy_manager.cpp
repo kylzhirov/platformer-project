@@ -4,26 +4,9 @@
 #include "level_manager.h"
 #include "player.h"
 
-void EnemiesManager::spawn_enemies() {
-    // Create enemies, incrementing their amount every time a new one is created
-    enemies.clear();
 
-    for (size_t row = 0; row < LevelManager::get_instance().get_current_level().get_rows(); ++row) {
-        for (size_t column = 0; column < LevelManager::get_instance().get_current_level().get_columns(); ++column) {
-            if (const char cell = LevelManager::get_instance().get_current_level().get_level_cell(row, column); cell == ENEMY) {
-                // Instantiate and add an enemy to the level
-                enemies.push_back({
-                        {static_cast<float>(column), static_cast<float>(row)},
-                        true
-                });
 
-                LevelManager::get_instance().set_level_cell(row, column, AIR);
-            }
-        }
-    }
-}
-
-void EnemiesManager::update_enemies() {
+void EnemyManager::update_enemies() {
     for (auto &enemy : enemies) {
         // Find the enemy's next x
         float next_x = enemy.get_pos().x;
@@ -41,7 +24,7 @@ void EnemiesManager::update_enemies() {
 }
 
 // Custom is_colliding function for enemies
-bool EnemiesManager::is_colliding_with_enemies(const Vector2 pos) const {
+bool EnemyManager::is_colliding_with_enemies(const Vector2 pos) const {
     Rectangle entity_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
 
     for (auto &enemy : enemies) {
@@ -53,7 +36,7 @@ bool EnemiesManager::is_colliding_with_enemies(const Vector2 pos) const {
     return false;
 }
 
-void EnemiesManager::remove_colliding_enemy(const Vector2 pos) {
+void EnemyManager::remove_colliding_enemy(const Vector2 pos) {
     const Rectangle entity_hitbox = {pos.x, pos.y, 1.0f, 1.0f};
 
     for (auto it = enemies.begin(); it != enemies.end(); ++it) {
@@ -68,9 +51,9 @@ void EnemiesManager::remove_colliding_enemy(const Vector2 pos) {
         }
     }
 }
-void EnemiesManager::draw_enemies() {
+void EnemyManager::draw_enemies() {
     // Go over all enemies and draw them, once again accounting to the player's movement and horizontal shift
-    for (auto &enemy : getInstance().get_enemies()) {
+    for (auto &enemy : get_instance().get_enemies()) {
         horizontal_shift = (screen_size.x - cell_size) / 2;
 
         Vector2 pos = {

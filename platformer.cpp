@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "raylib.h"
 
 #include "globals.h"
@@ -9,6 +11,10 @@
 #include "utilities.h"
 #include "enemy_manager.h"
 #include "level_manager.h"
+
+namespace std {
+    class runtime_error;
+}
 
 void update_game() {
     game_frame++;
@@ -38,7 +44,7 @@ void update_game() {
             }
 
             Player::get_instance().update_player();
-            EnemiesManager::getInstance().update_enemies();
+            EnemyManager::get_instance().update_enemies();
 
             if (IsKeyPressed(KEY_ESCAPE)) {
                 game_state = PAUSED_STATE;
@@ -130,8 +136,15 @@ int main() {
     load_fonts();
     load_images();
     load_sounds();
-    LevelManager::get_instance().rle_load("data/levels.rll");
-    LevelManager::get_instance().load_level();
+
+    try {
+        LevelManager::get_instance().rle_load("data/levels.rll");
+        LevelManager::get_instance().load_level();
+    } catch (const std::runtime_error& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+
 
     while (!WindowShouldClose()) {
         BeginDrawing();

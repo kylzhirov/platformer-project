@@ -103,12 +103,6 @@ inline const float GRAVITY_FORCE         = 0.01f;
 /* Player data */
 
 inline float player_y_velocity = 0;
-// inline Vector2 player_pos;
-//
-// inline bool is_player_on_ground;
-// inline bool is_looking_forward;
-// inline bool is_moving;
-//
 inline int player_level_scores[LEVEL_COUNT];
 //
 inline const int MAX_PLAYER_LIVES = 3;

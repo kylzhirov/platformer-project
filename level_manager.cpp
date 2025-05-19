@@ -1,14 +1,56 @@
 #include <exception>
 #include <fstream>
+#include <cstring>
 
-#include "level_manager.h"
 #include "enemy_manager.h"
+#include "game.h"
 #include "level.h"
 #include "raylib.h"
 #include "globals.h"
 #include "player.h"
+#include "level_manager.h"
 
+void LevelManager::draw_level() {
+    // Move the x-axis' center to the middle of the screen
+    horizontal_shift = (screen_size.x - cell_size) / 2;
 
+    for (size_t row = 0; row < get_instance().get_current_level().get_rows(); ++row) {
+        for (size_t column = 0; column < get_instance().get_current_level().get_columns(); ++column) {
+
+            Vector2 pos = {
+                // Move the level to the left as the player advances to the right,
+                // shifting to the left to allow the player to be centered later
+                (static_cast<float>(column) - Player::get_instance().get_player_pos_x()) * cell_size + horizontal_shift,
+                static_cast<float>(row) * cell_size
+        };
+
+            // Draw the level itself
+            char cell = get_instance().get_current_level().get_level_cell(row, column);
+            switch (cell) {
+                case WALL:
+                    draw_image(wall_image, pos, cell_size);
+                    break;
+                case WALL_DARK:
+                    draw_image(wall_dark_image, pos, cell_size);
+                    break;
+                case SPIKE:
+                    draw_image(spike_image, pos, cell_size);
+                    break;
+                case COIN:
+                    draw_sprite(coin_sprite, pos, cell_size);
+                    break;
+                case EXIT:
+                    draw_image(exit_image, pos, cell_size);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    Player::get_instance().draw_player();
+    EnemyManager::get_instance().draw_enemies();
+}
 
 bool LevelManager::is_inside_level(int row, int column) {
     if (row < 0 || row >= get_instance().get_current_level().get_rows()) return false;
@@ -72,21 +114,21 @@ void LevelManager::load_level(int offset) {
     }
 
     // Level duplication
-    size_t rows = LEVELS[level_index].get_rows();
-    size_t columns = LEVELS[level_index].get_columns();
+    size_t rows = levels[level_index].get_rows();
+    size_t columns = levels[level_index].get_columns();
     current_level_data = new char[rows * columns];
 
 
 
     for (int row = 0; row < rows; row++) {
         for (int column = 0; column < columns; column++) {
-            const char* source_data = LEVELS[level_index].get_data();
+            const char* source_data = levels[level_index].get_data();
             current_level_data[row * columns + column] = source_data[row * columns + column];
         }
     }
     get_instance().set_current_level(Level{rows, columns, current_level_data});
-    Player::get_instance().spawn_player();
-    EnemiesManager::getInstance().spawn_enemies();
+    Game::get_instance().spawn_player();
+    Game::get_instance().spawn_enemies();
 
     derive_graphics_metrics_from_loaded_level();
 
@@ -97,73 +139,25 @@ void LevelManager::load_level(int offset) {
 void LevelManager::unload_level() {
     delete[] get_instance().get_current_level_data();
 }
-void LevelManager::draw_level() {
-    // Move the x-axis' center to the middle of the screen
-    horizontal_shift = (screen_size.x - cell_size) / 2;
 
-    for (size_t row = 0; row < get_instance().get_current_level().get_rows(); ++row) {
-        for (size_t column = 0; column < get_instance().get_current_level().get_columns(); ++column) {
-
-            Vector2 pos = {
-                // Move the level to the left as the player advances to the right,
-                // shifting to the left to allow the player to be centered later
-                (static_cast<float>(column) - Player::get_instance().get_player_pos_x()) * cell_size + horizontal_shift,
-                static_cast<float>(row) * cell_size
-        };
-
-            // Draw the level itself
-            char cell = get_instance().get_current_level().get_level_cell(row, column);
-            switch (cell) {
-                case WALL:
-                    draw_image(wall_image, pos, cell_size);
-                break;
-                case WALL_DARK:
-                    draw_image(wall_dark_image, pos, cell_size);
-                break;
-                case SPIKE:
-                    draw_image(spike_image, pos, cell_size);
-                break;
-                case COIN:
-                    draw_sprite(coin_sprite, pos, cell_size);
-                break;
-                case EXIT:
-                    draw_image(exit_image, pos, cell_size);
-                break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    Player::get_instance().draw_player();
-    EnemiesManager::getInstance().draw_enemies();
-}
-
-void LevelManager::set_level_cell(size_t row, size_t column, char chr) {
-    get_instance().get_current_level().get_level_cell(row, column) = chr;
-}
-
-void LevelManager::set_current_level(const Level &current_level) {
-    this->current_level = current_level;
-}
 
 std::vector<Level> LevelManager::rle_load(const std::string& file_path) {
-    std::ifstream level_file_stram(file_path);
+    std::ifstream level_file_stream(file_path);
 
-    if (!level_file_stram) {
+    if (!level_file_stream) {
         throw ("Failed to access level file");
     }
 
     std::string content_line;
 
-    while (std::getline(level_file_stram, content_line)) {
+    while (std::getline(level_file_stream, content_line)) {
         if (content_line[0] == ';' || content_line.empty()) {
             continue;
         }
-        LEVELS.push_back(parse_level(content_line));
+        levels.push_back(parse_level(content_line));
     }
 
-    return LEVELS;
+    return levels;
 }
 
 Level LevelManager::parse_level(const std::string& rle_data_line) {
@@ -219,10 +213,16 @@ Level LevelManager::parse_level(const std::string& rle_data_line) {
     char* level_data = new char[height * width];
 
     for (size_t y = 0; y < height; y++) {
-        for (size_t x = 0; x < width; x++) {
-            level_data[y * width + x] = level_lines[y][x];
-        }
+        memcpy(&level_data[y * width], level_lines[y].data(), width);
     }
+
     return {height, width, level_data};
 }
 
+void LevelManager::set_level_cell(size_t row, size_t column, char chr) {
+    get_instance().get_current_level().get_level_cell(row, column) = chr;
+}
+
+void LevelManager::set_current_level(const Level &current_level) {
+    this->current_level = current_level;
+}
