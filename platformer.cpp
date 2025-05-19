@@ -96,33 +96,33 @@ void draw_game() {
     switch(game_state) {
         case MENU_STATE:
             ClearBackground(BLACK);
-            draw_menu();
+            Graphics::get_instance().draw_menu();
             break;
 
         case GAME_STATE:
             ClearBackground(BLACK);
-            draw_parallax_background();
+            Graphics::get_instance().draw_parallax_background();
             LevelManager::get_instance().draw_level();
-            draw_game_overlay();
+            Graphics::get_instance().draw_game_overlay();
             break;
 
         case DEATH_STATE:
             ClearBackground(BLACK);
-            draw_death_screen();
+            Graphics::get_instance().draw_death_screen();
             break;
 
         case GAME_OVER_STATE:
             ClearBackground(BLACK);
-            draw_game_over_menu();
+            Graphics::get_instance().draw_game_over_menu();
             break;
 
         case PAUSED_STATE:
             ClearBackground(BLACK);
-            draw_pause_menu();
+            Graphics::get_instance().draw_pause_menu();
             break;
 
         case VICTORY_STATE:
-            draw_victory_menu();
+            Graphics::get_instance().draw_victory_menu();
             break;
     }
 }

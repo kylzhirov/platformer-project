@@ -21,10 +21,6 @@ inline const char WALL      = '#',
 
 inline int level_index = 0;
 inline const int LEVEL_COUNT = 3;
-//
-// inline Level* LEVELS[LEVEL_COUNT] = {
-//         &LEVEL_1, &LEVEL_2, &LEVEL_3
-// };
 
 /* Timer-mechanic related */
 inline const int MAX_LEVEL_TIME = 50 * 60;
@@ -44,10 +40,8 @@ inline const float GRAVITY_FORCE         = 0.01f;
 
 inline float player_y_velocity = 0;
 inline int player_level_scores[LEVEL_COUNT];
-//
 inline const int MAX_PLAYER_LIVES = 3;
 inline int player_lives = MAX_PLAYER_LIVES;
-
 
 /* Graphic Metrics */
 
@@ -70,6 +64,8 @@ inline const float PARALLAX_LAYERED_SPEED_DIFFERENCE = 3.0f;
 /* Fonts */
 
 inline Font menu_font;
+
+
 
 /* Display Text Parameters */
 
@@ -133,6 +129,7 @@ inline Text victory_subtitle = {
     "Press Enter to go back to menu",
     {0.50f, 0.65f}
 };
+
 
 /* Images and Sprites */
 
@@ -218,22 +215,7 @@ inline game_state game_state = MENU_STATE;
 
 // GRAPHICS_H
 
-void draw_text(Text &text);
-void derive_graphics_metrics_from_loaded_level();
-void draw_game_overlay();
-void draw_level();
-void draw_player();
-void draw_enemies();
-void draw_menu();
 
-void draw_pause_menu();
-void draw_death_screen();
-void draw_game_over_menu();
-
-void create_victory_menu_background();
-void animate_victory_menu_background();
-void draw_victory_menu_background();
-void draw_victory_menu();
 
 // PLAYER_H
 

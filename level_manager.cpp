@@ -9,6 +9,7 @@
 #include "globals.h"
 #include "player.h"
 #include "level_manager.h"
+#include "graphics.h"
 
 void LevelManager::draw_level() {
     // Move the x-axis' center to the middle of the screen
@@ -108,7 +109,7 @@ void LevelManager::load_level(int offset) {
     // Win logic
     if (level_index >= LEVEL_COUNT) {
         game_state = VICTORY_STATE;
-        create_victory_menu_background();
+        Graphics::get_instance().create_victory_menu_background();
         level_index = 0;
         return;
     }
@@ -130,7 +131,7 @@ void LevelManager::load_level(int offset) {
     Game::get_instance().spawn_player();
     EnemyManager::get_instance().spawn_enemies();
 
-    derive_graphics_metrics_from_loaded_level();
+    Graphics::get_instance().derive_graphics_metrics_from_loaded_level();
 
     // Reset the timer
     timer = MAX_LEVEL_TIME;
